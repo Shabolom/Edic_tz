@@ -1,0 +1,214 @@
+definitions:
+  models.Error:
+    properties:
+      code:
+        type: integer
+      error:
+        type: string
+    type: object
+  models.Register:
+    properties:
+      login:
+        type: string
+      password:
+        type: string
+    type: object
+host: localhost:8008
+info:
+  contact:
+    email: tima.gorenskiy@mail.ru
+    url: тут моя контактная информация (https://vk.com/id192672036)
+  description: Это выпускной проэкт с использованием свагера и докуера
+  termsOfService: сдесь были бы условия использования еслиб я их мог обозначить
+  title: User API
+  version: 1.0.0
+paths:
+  /api/delete_acc:
+    delete:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: успешно удалено
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: удаление аккаунта
+      tags:
+      - User
+  /api/get_size_of_elements/:value:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: введите страницу
+        in: query
+        name: page
+        required: true
+        type: string
+      - description: введите количество элементов
+        in: query
+        name: limit
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: успешно удалено
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: пагинация получение определенного количества элементов пропуская их
+        в соответствии с страницей
+      tags:
+      - User
+  /api/login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: авторизация
+        in: body
+        name: ввод
+        required: true
+        schema:
+          $ref: '#/definitions/models.Register'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: успешно авторизировались
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Error'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      summary: авторизация с выдачей токена в хэдерсе
+      tags:
+      - Authorization
+  /api/post_csv:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: вставьте файл
+        in: formData
+        name: ввод
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: успешно внесено
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Error'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: заносим данные из csv файла
+      tags:
+      - User
+  /api/register:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: ввести логин и пароль
+        in: body
+        name: ввод
+        required: true
+        schema:
+          $ref: '#/definitions/models.Register'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: вы зарегестрировались
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Error'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/models.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      summary: регистрация пользователя с выдачей токена
+      tags:
+      - Authorization
+  /api/swap_login_password:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: вставьте новый логин и пароль
+        in: body
+        name: ввод
+        required: true
+        schema:
+          $ref: '#/definitions/models.Register'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: успешно
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: изменяем логин и пароль
+      tags:
+      - User
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
